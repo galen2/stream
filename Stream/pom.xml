@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>llb</groupId>
+  <artifactId>Stream</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Stream</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+    	<groupId>com.alibaba.otter</groupId>
+    	<artifactId>canal.client</artifactId>
+    	<version>1.0.12</version>
+	</dependency>
+	 <dependency>
+	  <groupId>org.apache.storm</groupId>
+	  <artifactId>storm-core</artifactId>
+	  <version>0.9.3</version>
+	   <scope>provided</scope>
+	</dependency>
+	
+	<!-- <dependency>
+		<groupId>org.apache.storm</groupId>
+		<artifactId>storm-kafka</artifactId>
+		<version>0.9.3</version>
+	</dependency> -->
+	
+	<dependency>
+           <groupId>org.apache.curator</groupId>
+           <artifactId>curator-framework</artifactId>
+           <version>2.5.0</version>
+       </dependency>
+       
+	<dependency>
+           <groupId>com.google.guava</groupId>
+           <artifactId>guava</artifactId>
+           <version>11.0.2</version>
+       </dependency>
+	<dependency>
+		 <groupId>org.apache.storm</groupId>
+	 	 <artifactId>storm-hbase</artifactId>
+         <version>0.9.3</version>
+	</dependency>
+       <dependency>
+           <groupId>com.github.fhuss</groupId>
+           <artifactId>storm-elasticsearch</artifactId>
+           <version>0.3.0</version>
+       </dependency>
+	<dependency>
+           <groupId>com.google.code.gson</groupId>
+           <artifactId>gson</artifactId>
+           <version>2.2.4</version>
+       </dependency>
+       
+       <dependency>
+           <groupId>org.elasticsearch</groupId>
+           <artifactId>elasticsearch</artifactId>
+           <version>1.5.1</version>
+           <!--scope>provided</scope-->
+       </dependency>
+       <dependency>
+           <groupId>com.github.tlrx</groupId>
+           <artifactId>elasticsearch-test</artifactId>
+           <version>1.2.1</version>
+       </dependency>
+	<dependency>
+		<groupId>org.apache.kafka</groupId>
+		 <artifactId>kafka_2.10</artifactId>
+           <version>0.8.1.1</version>
+		<exclusions>
+			<exclusion>
+				<groupId>com.sun.jmx</groupId>
+				<artifactId>jmxri</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.sun.jdmk</groupId>
+				<artifactId>jmxtools</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>javax.jms</groupId>
+				<artifactId>jms</artifactId>
+			</exclusion>
+			<exclusion>
+                   <groupId>org.apache.zookeeper</groupId>
+                   <artifactId>zookeeper</artifactId>
+               </exclusion>
+               <exclusion>
+                   <artifactId>log4j</artifactId>
+                   <groupId>log4j</groupId>
+               </exclusion>
+		</exclusions>
+	</dependency>
+		<dependency>
+		  <groupId>net.sf.json-lib</groupId>
+		  <artifactId>json-lib</artifactId>
+		  <version>2.3</version>
+		  <classifier>jdk15</classifier>
+		</dependency>
+	
+	<dependency>
+		<groupId>dof</groupId>
+		<artifactId>core</artifactId>
+		<version>0.0.3</version>
+	</dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
