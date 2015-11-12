@@ -24,6 +24,7 @@ import storm.trident.spout.ISpoutPartition;
 public class Partition implements ISpoutPartition {
 
     public Broker host;
+    public String topic;
     public int partition;
 
     // for kryo compatibility
@@ -31,8 +32,9 @@ public class Partition implements ISpoutPartition {
 	
     }
     
-    public Partition(Broker host, int partition) {
+    public Partition(Broker host,String topic, int partition) {
         this.host = host;
+        this.topic = topic;
         this.partition = partition;
     }
 

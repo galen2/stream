@@ -73,6 +73,10 @@ public class KafkaSpouts extends BaseRichSpout {
     public void open(Map conf, final TopologyContext context, final SpoutOutputCollector collector) {
         _collector = collector;
         Map stateConf = new HashMap(conf);
+        String[] topics = _spoutConfig.topic;
+        if(topics==null || topics.length==0){
+        	throw new IllegalArgumentException("Topic is not Empty!");
+        }
         List<String> zkServers = _spoutConfig.zkServers;
         if (zkServers == null) {
             zkServers = (List<String>) conf.get(Config.STORM_ZOOKEEPER_SERVERS);

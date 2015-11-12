@@ -38,7 +38,7 @@ public class SpoutConfig extends KafkaConfig implements Serializable {
     public double retryDelayMultiplier = 1.0;
     public long retryDelayMaxMs = 60 * 1000;
 
-    public SpoutConfig(BrokerHosts hosts, String topic, String zkRoot, String id) {
+    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, String id) {
     	super(hosts, topic);
     	this.zkRoot = zkRoot;
     	this.id = id;
@@ -46,7 +46,7 @@ public class SpoutConfig extends KafkaConfig implements Serializable {
     
     
     
-    public SpoutConfig(BrokerHosts hosts, String topic, String zkRoot, String id, List<String> zkServers,Integer zkPort) {
+    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, String id, List<String> zkServers,Integer zkPort) {
         super(hosts, topic);
         this.zkRoot = zkRoot;
         this.id = id;

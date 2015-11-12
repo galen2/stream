@@ -66,9 +66,10 @@ public class KafkaUtils {
     public static IBrokerReader makeBrokerReader(Map stormConf, KafkaConfig conf) {
         if (conf.hosts instanceof StaticHosts) {
             return new StaticBrokerReader(((StaticHosts) conf.hosts).getPartitionInformation());
-        } else {
-            return new ZkBrokerReader(stormConf, conf.topic, (ZkHosts) conf.hosts);
+        } else if(conf.topic.length>0){
+        		return new ZkBrokerReader(stormConf, conf.topic[0], (ZkHosts) conf.hosts);
         }
+        return null;
     }
 
 
@@ -164,10 +165,9 @@ public class KafkaUtils {
         }
     }
 
-    public static ByteBufferMessageSet fetchMessages(KafkaConfig config, SimpleConsumer consumer, Partition partition, long offset)
+    public static ByteBufferMessageSet fetchMessages(KafkaConfig config, SimpleConsumer consumer,String topic, Partition partition, long offset)
             throws TopicOffsetOutOfRangeException, FailedFetchException,RuntimeException {
         ByteBufferMessageSet msgs = null;
-        String topic = config.topic;
         int partitionId = partition.partition;
         FetchRequestBuilder builder = new FetchRequestBuilder();
         FetchRequest fetchRequest = builder.addFetch(topic, partitionId, offset, config.fetchSizeBytes).

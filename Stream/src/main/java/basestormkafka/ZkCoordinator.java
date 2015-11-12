@@ -68,7 +68,7 @@ public class ZkCoordinator implements PartitionCoordinator {
 
     private static DynamicBrokersReader buildReader(Map stormConf, SpoutConfig spoutConfig) {
         ZkHosts hosts = (ZkHosts) spoutConfig.hosts;
-        return new DynamicBrokersReader(stormConf, hosts.brokerZkStr, hosts.brokerZkPath, spoutConfig.topic);
+        return new DynamicBrokersReader(stormConf, hosts.brokerZkStr, hosts.brokerZkPath);
     }
 
     @Override
@@ -84,27 +84,30 @@ public class ZkCoordinator implements PartitionCoordinator {
     public void refresh() {
         try {
             LOG.info(taskId(_taskIndex, _totalTasks) + "Refreshing partition manager connections");
-            GlobalPartitionInformation brokerInfo = _reader.getBrokerInfo();
-            List<Partition> mine = KafkaUtils.calculatePartitionsForTask(brokerInfo, _totalTasks, _taskIndex);
-
-            Set<Partition> curr = _managers.keySet();
-            Set<Partition> newPartitions = new HashSet<Partition>(mine);
-            newPartitions.removeAll(curr);
-
-            Set<Partition> deletedPartitions = new HashSet<Partition>(curr);
-            deletedPartitions.removeAll(mine);
-
-            LOG.info(taskId(_taskIndex, _totalTasks) + "Deleted partition managers: " + deletedPartitions.toString());
-
-            for (Partition id : deletedPartitions) {
-                PartitionManager man = _managers.remove(id);
-                man.close();
-            }
-            LOG.info(taskId(_taskIndex, _totalTasks) + "New partition managers: " + newPartitions.toString());
-
-            for (Partition id : newPartitions) {
-                PartitionManager man = new PartitionManager(_connections, _topologyInstanceId, _state, _stormConf, _spoutConfig, id);
-                _managers.put(id, man);
+            String[] topics =  _spoutConfig.topic;
+            for(String topic : topics){
+            	GlobalPartitionInformation brokerInfo = _reader.getBrokerInfo(topic);
+            	List<Partition> mine = KafkaUtils.calculatePartitionsForTask(brokerInfo,_totalTasks, _taskIndex);
+            	
+            	Set<Partition> curr = _managers.keySet();
+            	Set<Partition> newPartitions = new HashSet<Partition>(mine);
+            	newPartitions.removeAll(curr);
+            	
+            	Set<Partition> deletedPartitions = new HashSet<Partition>(curr);
+            	deletedPartitions.removeAll(mine);
+            	
+            	LOG.info(taskId(_taskIndex, _totalTasks) + "Deleted partition managers: " + deletedPartitions.toString());
+            	
+            	for (Partition id : deletedPartitions) {
+            		PartitionManager man = _managers.remove(id);
+            		man.close();
+            	}
+            	LOG.info(taskId(_taskIndex, _totalTasks) + "New partition managers: " + newPartitions.toString());
+            	
+            	for (Partition id : newPartitions) {
+            		PartitionManager man = new PartitionManager(_connections, _topologyInstanceId, _state, _stormConf, _spoutConfig, id);
+            		_managers.put(id, man);
+            	}
             }
 
         } catch (Exception e) {

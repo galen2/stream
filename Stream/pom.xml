@@ -105,11 +105,11 @@
 		  <classifier>jdk15</classifier>
 		</dependency>
 	
-	<dependency>
+	<!-- <dependency>
 		<groupId>dof</groupId>
 		<artifactId>core</artifactId>
 		<version>0.0.3</version>
-	</dependency>
+	</dependency> -->
 
     <dependency>
       <groupId>junit</groupId>

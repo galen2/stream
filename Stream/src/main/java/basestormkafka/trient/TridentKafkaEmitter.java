@@ -64,7 +64,7 @@ public class TridentKafkaEmitter {
         _topologyInstanceId = topologyInstanceId;
         _connections = new DynamicPartitionConnections(_config, KafkaUtils.makeBrokerReader(conf, _config));
         _topologyName = (String) conf.get(Config.TOPOLOGY_NAME);
-        _kafkaOffsetMetric = new KafkaUtils.KafkaOffsetMetric(_config.topic, _connections);
+        _kafkaOffsetMetric = new KafkaUtils.KafkaOffsetMetric(_config.topic[0], _connections);
         context.registerMetric("kafkaOffset", _kafkaOffsetMetric, _config.metricsTimeBucketSizeInSecs);
         _kafkaMeanFetchLatencyMetric = context.registerMetric("kafkaFetchAvg", new MeanReducer(), _config.metricsTimeBucketSizeInSecs);
         _kafkaMaxFetchLatencyMetric = context.registerMetric("kafkaFetchMax", new MaxMetric(), _config.metricsTimeBucketSizeInSecs);
@@ -107,22 +107,22 @@ public class TridentKafkaEmitter {
                 lastInstanceId = (String) lastTopoMeta.get("id");
             }
             if (_config.ignoreZkOffsets && !_topologyInstanceId.equals(lastInstanceId)) {
-                offset = KafkaUtils.getOffset(consumer, _config.topic, partition.partition, _config.startOffsetTime);
+                offset = KafkaUtils.getOffset(consumer, _config.topic[0], partition.partition, _config.startOffsetTime);
             } else {
                 offset = (Long) lastMeta.get("nextOffset");
             }
         } else {
-            offset = KafkaUtils.getOffset(consumer, _config.topic, partition.partition, _config);
+            offset = KafkaUtils.getOffset(consumer, _config.topic[0], partition.partition, _config);
         }
 
         ByteBufferMessageSet msgs = null;
         try {
             msgs = fetchMessages(consumer, partition, offset);
         } catch (TopicOffsetOutOfRangeException e) {
-            long newOffset = KafkaUtils.getOffset(consumer, _config.topic, partition.partition, kafka.api.OffsetRequest.EarliestTime());
+            long newOffset = KafkaUtils.getOffset(consumer, _config.topic[0], partition.partition, kafka.api.OffsetRequest.EarliestTime());
             LOG.warn("OffsetOutOfRange: Updating offset from offset = " + offset + " to offset = " + newOffset);
             offset = newOffset;
-            msgs = KafkaUtils.fetchMessages(_config, consumer, partition, offset);
+            msgs = KafkaUtils.fetchMessages(_config, consumer,_config.topic[0], partition, offset);
         }
 
         long endoffset = offset;
@@ -144,7 +144,7 @@ public class TridentKafkaEmitter {
     private ByteBufferMessageSet fetchMessages(SimpleConsumer consumer, Partition partition, long offset) {
         long start = System.nanoTime();
         ByteBufferMessageSet msgs = null;
-        msgs = KafkaUtils.fetchMessages(_config, consumer, partition, offset);
+        msgs = KafkaUtils.fetchMessages(_config, consumer,_config.topic[0], partition, offset);
         long end = System.nanoTime();
         long millis = (end - start) / 1000000;
         _kafkaMeanFetchLatencyMetric.update(millis);

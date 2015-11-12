@@ -33,13 +33,13 @@ import com.google.common.base.Objects;
 
 public class GlobalPartitionInformation implements Iterable<Partition>, Serializable {
 
-    private Map<Integer, Broker> partitionMap;
+    private Map<PartitioinKey, Broker> partitionMap;
 
     public GlobalPartitionInformation() {
-        partitionMap = new TreeMap<Integer, Broker>();
+        partitionMap = new TreeMap<PartitioinKey, Broker>();
     }
 
-    public void addPartition(int partitionId, Broker broker) {
+    public void addPartition(PartitioinKey partitionId, Broker broker) {
         partitionMap.put(partitionId, broker);
     }
 
@@ -56,15 +56,15 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
 
     public List<Partition> getOrderedPartitions() {
         List<Partition> partitions = new LinkedList<Partition>();
-        for (Map.Entry<Integer, Broker> partition : partitionMap.entrySet()) {
-            partitions.add(new Partition(partition.getValue(), partition.getKey()));
+        for (Map.Entry<PartitioinKey, Broker> partition : partitionMap.entrySet()) {
+            partitions.add(new Partition(partition.getValue(),partition.getKey()._topic, partition.getKey()._partitionId));
         }
         return partitions;
     }
 
     @Override
     public Iterator<Partition> iterator() {
-        final Iterator<Map.Entry<Integer, Broker>> iterator = partitionMap.entrySet().iterator();
+        final Iterator<Map.Entry<PartitioinKey, Broker>> iterator = partitionMap.entrySet().iterator();
 
         return new Iterator<Partition>() {
             @Override
@@ -74,8 +74,8 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
 
             @Override
             public Partition next() {
-                Map.Entry<Integer, Broker> next = iterator.next();
-                return new Partition(next.getValue(), next.getKey());
+                Map.Entry<PartitioinKey, Broker> next = iterator.next();
+                return new Partition(next.getValue(), next.getKey()._topic,next.getKey()._partitionId);
             }
 
             @Override
@@ -84,7 +84,7 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
             }
         };
     }
-
+  
     @Override
     public int hashCode() {
         return Objects.hashCode(partitionMap);
@@ -101,4 +101,17 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
         final GlobalPartitionInformation other = (GlobalPartitionInformation) obj;
         return Objects.equal(this.partitionMap, other.partitionMap);
     }
+    
+    
+    
+    public static class PartitioinKey{
+    	public Integer _partitionId;
+    	public String _topic;
+    	public PartitioinKey(Integer partition,String topic){
+    		this._partitionId = partition;
+    		this._topic = topic;
+    	}
+   }
+    
+    
 }

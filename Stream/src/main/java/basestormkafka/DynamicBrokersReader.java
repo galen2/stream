@@ -28,10 +28,10 @@ import org.apache.curator.retry.RetryNTimes;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import backtype.storm.Config;
 import backtype.storm.utils.Utils;
 import basestormkafka.trient.GlobalPartitionInformation;
+import basestormkafka.trient.GlobalPartitionInformation.PartitioinKey;
 /**
  * 获取zookeeper节点partition的相关信息
  * @author Administrator
@@ -43,13 +43,12 @@ public class DynamicBrokersReader {
 
     private CuratorFramework _curator;
     private String _zkPath;
-    private String _topic;
 
-    public DynamicBrokersReader(Map conf, String zkStr, String zkPath, String topic) {
+    public DynamicBrokersReader(Map conf, String zkStr, String zkPath) {
         _zkPath = zkPath;
-        _topic = topic;
         try {
-            _curator = CuratorFrameworkFactory.newClient(
+        	
+        	_curator = CuratorFrameworkFactory.newClient(
                     zkStr,
                     Utils.getInt(conf.get(Config.STORM_ZOOKEEPER_SESSION_TIMEOUT)),
                     Utils.getInt(conf.get(Config.STORM_ZOOKEEPER_CONNECTION_TIMEOUT)),
@@ -64,18 +63,18 @@ public class DynamicBrokersReader {
     /**
      * Get all partitions with their current leaders
      */
-    public GlobalPartitionInformation getBrokerInfo() throws SocketTimeoutException {
+    public GlobalPartitionInformation getBrokerInfo(String topic) throws SocketTimeoutException {
       GlobalPartitionInformation globalPartitionInformation = new GlobalPartitionInformation();
         try {
-            int numPartitionsForTopic = getNumPartitions();
+            int numPartitionsForTopic = getNumPartitions(topic);
             String brokerInfoPath = brokerPath();
             for (int partition = 0; partition < numPartitionsForTopic; partition++) {
-                int leader = getLeaderFor(partition);
+                int leader = getLeaderFor(partition,topic);
                 String path = brokerInfoPath + "/" + leader;
                 try {
-                    byte[] brokerData = _curator.getData().forPath(path);
-                    Broker hp = getBrokerHost(brokerData);
-                    globalPartitionInformation.addPartition(partition, hp);
+                	 byte[] brokerData = _curator.getData().forPath(path);
+                     Broker hp = getBrokerHost(brokerData);
+                     globalPartitionInformation.addPartition(new PartitioinKey(partition,topic),hp);
                 } catch (org.apache.zookeeper.KeeperException.NoNodeException e) {
                     LOG.error("Node {} does not exist ", path);
                 }
@@ -90,9 +89,9 @@ public class DynamicBrokersReader {
     }
 
 
-    private int getNumPartitions() {
+    private int getNumPartitions(String topic) {
         try {
-            String topicBrokersPath = partitionPath();
+            String topicBrokersPath = partitionPath(topic);
             List<String> children = _curator.getChildren().forPath(topicBrokersPath);
             return children.size();
         } catch (Exception e) {
@@ -100,8 +99,8 @@ public class DynamicBrokersReader {
         }
     }
 
-    public String partitionPath() {
-        return _zkPath + "/topics/" + _topic + "/partitions";
+    public String partitionPath(String topic) {
+        return _zkPath + "/topics/" + topic + "/partitions";
     }
 
     public String brokerPath() {
@@ -115,9 +114,9 @@ public class DynamicBrokersReader {
      * @param partition
      * @return
      */
-    private int getLeaderFor(long partition) {
+    private int getLeaderFor(long partition,String topic) {
         try {
-            String topicBrokersPath = partitionPath();
+            String topicBrokersPath = partitionPath(topic);
             byte[] hostPortData = _curator.getData().forPath(topicBrokersPath + "/" + partition + "/state");
             Map<Object, Object> value = (Map<Object, Object>) JSONValue.parse(new String(hostPortData, "UTF-8"));
             Integer leader = ((Number) value.get("leader")).intValue();

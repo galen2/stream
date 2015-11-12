@@ -51,14 +51,13 @@ public class DynamicPartitionConnections {
     public DynamicPartitionConnections(KafkaConfig config, IBrokerReader brokerReader) {
         _config = config;
         _reader = brokerReader;
-        GlobalPartitionInformation currentBrokers = _reader.getCurrentBrokers();
-        System.out.println(currentBrokers);
     }
 
     public SimpleConsumer register(Partition partition) {
         Broker broker = _reader.getCurrentBrokers().getBrokerFor(partition.partition);
         return register(broker, partition.partition);
     }
+    
 
     public SimpleConsumer register(Broker host, int partition) {
         if (!_connections.containsKey(host)) {

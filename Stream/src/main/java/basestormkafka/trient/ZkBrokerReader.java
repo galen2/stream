@@ -34,14 +34,15 @@ public class ZkBrokerReader implements IBrokerReader {
 	GlobalPartitionInformation cachedBrokers;
 	DynamicBrokersReader reader;
 	long lastRefreshTimeMs;
-
+	String _topic;
 
 	long refreshMillis;
 
 	public ZkBrokerReader(Map conf, String topic, ZkHosts hosts) {
 		try {
-			reader = new DynamicBrokersReader(conf, hosts.brokerZkStr, hosts.brokerZkPath, topic);
-			cachedBrokers = reader.getBrokerInfo();
+			this._topic = topic;
+			reader = new DynamicBrokersReader(conf, hosts.brokerZkStr, hosts.brokerZkPath);
+			cachedBrokers = reader.getBrokerInfo(topic);
 			lastRefreshTimeMs = System.currentTimeMillis();
 			refreshMillis = hosts.refreshFreqSecs * 1000L;
 		} catch (java.net.SocketTimeoutException e) {
@@ -56,7 +57,7 @@ public class ZkBrokerReader implements IBrokerReader {
 		if (currTime > lastRefreshTimeMs + refreshMillis) {
 			try {
 				LOG.info("brokers need refreshing because " + refreshMillis + "ms have expired");
-				cachedBrokers = reader.getBrokerInfo();
+				cachedBrokers = reader.getBrokerInfo(_topic);
 				lastRefreshTimeMs = currTime;
 			} catch (java.net.SocketTimeoutException e) {
 				LOG.warn("Failed to update brokers", e);

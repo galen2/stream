@@ -15,9 +15,7 @@ import basestormkafka.trient.TridentKafkaState;
 
 public class Client {
 	    
-    private static String kafkaTopic = "my-replicated-topic";
-
-    
+    	private static String kafkaTopic = "my-replicated-topic";
 	    private static String zkHost = "192.168.33.14";
 	    
 	    private static int zkPort = 2181;
