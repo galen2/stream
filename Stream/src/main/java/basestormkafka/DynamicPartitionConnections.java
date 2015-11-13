@@ -27,7 +27,7 @@ import kafka.javaapi.consumer.SimpleConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import basestormkafka.trient.GlobalPartitionInformation;
+import basestormkafka.trient.GlobalPartitionInformation.PartitioinKey;
 import basestormkafka.trient.IBrokerReader;
 
 
@@ -54,7 +54,8 @@ public class DynamicPartitionConnections {
     }
 
     public SimpleConsumer register(Partition partition) {
-        Broker broker = _reader.getCurrentBrokers().getBrokerFor(partition.partition);
+    	 Broker broker = partition.host;
+//        Broker broker = _reader.getCurrentBrokers().getBrokerFor(new PartitioinKey( partition.partition,partition.topic));
         return register(broker, partition.partition);
     }
     

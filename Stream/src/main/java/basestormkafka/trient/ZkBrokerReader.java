@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import basestormkafka.DynamicBrokersReader;
 import basestormkafka.ZkHosts;
 
-
-
 public class ZkBrokerReader implements IBrokerReader {
 
 	public static final Logger LOG = LoggerFactory.getLogger(ZkBrokerReader.class);

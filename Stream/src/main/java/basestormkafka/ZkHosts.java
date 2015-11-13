@@ -21,8 +21,8 @@ package basestormkafka;
 public class ZkHosts implements BrokerHosts {
     private static final String DEFAULT_ZK_PATH = "/brokers";
 
-    public String brokerZkStr = null;
-    public String brokerZkPath = null; // e.g., /kafka/brokers
+    public String brokerZkStr = null;// e.g.192.168.33.14:2181
+    public String brokerZkPath = null; // e.g., /kafka/brokers，为了从partition里面获取KAFKA的HOST地址
     public int refreshFreqSecs = 60;
 
     public ZkHosts(String brokerZkStr, String brokerZkPath) {

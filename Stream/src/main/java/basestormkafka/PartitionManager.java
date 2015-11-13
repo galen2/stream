@@ -263,8 +263,10 @@ public class PartitionManager {
 
     
     public void commit() {
+    	String committedPath = committedPath();
+    	System.out.println(committedPath);
         long lastCompletedOffset = lastCompletedOffset();
-        if (_committedTo != lastCompletedOffset) {
+//        if (_committedTo != lastCompletedOffset) {
             LOG.debug("Writing last completed offset (" + lastCompletedOffset + ") to ZK for " + _partition + " for topology: " + _topologyInstanceId);
             Map<Object, Object> data = (Map<Object, Object>) ImmutableMap.builder()
                     .put("topology", ImmutableMap.of("id", _topologyInstanceId,
@@ -277,13 +279,13 @@ public class PartitionManager {
             _state.writeJSON(committedPath(), data);
             _committedTo = lastCompletedOffset;
             LOG.debug("Wrote last completed offset (" + lastCompletedOffset + ") to ZK for " + _partition + " for topology: " + _topologyInstanceId);
-        } else {
-            LOG.debug("No new offset for " + _partition + " for topology: " + _topologyInstanceId);
-        }
+//        } else {
+//            LOG.debug("No new offset for " + _partition + " for topology: " + _topologyInstanceId);
+//        }
     }
-
+    ///kafka/my-replicated-topic/partition_1
     private String committedPath() {
-        return _spoutConfig.zkRoot + "/" + _spoutConfig.id + "/" + _partition.getId();
+        return _spoutConfig.zkRoot + "/" + _partition.topic + "/" + _partition.getId();
     }
 
     public long lastCompletedOffset() {

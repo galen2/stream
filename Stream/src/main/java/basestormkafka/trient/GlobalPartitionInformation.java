@@ -18,6 +18,7 @@
 package basestormkafka.trient;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +32,13 @@ import basestormkafka.Partition;
 import com.google.common.base.Objects;
 
 
-public class GlobalPartitionInformation implements Iterable<Partition>, Serializable {
+//public class GlobalPartitionInformation implements Iterable<Partition>, Serializable {
+public class GlobalPartitionInformation implements  Serializable {
 
     private Map<PartitioinKey, Broker> partitionMap;
 
     public GlobalPartitionInformation() {
-        partitionMap = new TreeMap<PartitioinKey, Broker>();
+        partitionMap = new HashMap<PartitioinKey, Broker>();
     }
 
     public void addPartition(PartitioinKey partitionId, Broker broker) {
@@ -50,10 +52,13 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
                 '}';
     }
 
-    public Broker getBrokerFor(Integer partitionId) {
+    public Broker getBrokerFor(PartitioinKey partitionId) {
         return partitionMap.get(partitionId);
     }
 
+    public boolean empty(){
+    	return partitionMap.size()==0;
+    }
     public List<Partition> getOrderedPartitions() {
         List<Partition> partitions = new LinkedList<Partition>();
         for (Map.Entry<PartitioinKey, Broker> partition : partitionMap.entrySet()) {
@@ -62,7 +67,7 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
         return partitions;
     }
 
-    @Override
+  /*  @Override
     public Iterator<Partition> iterator() {
         final Iterator<Map.Entry<PartitioinKey, Broker>> iterator = partitionMap.entrySet().iterator();
 
@@ -83,7 +88,7 @@ public class GlobalPartitionInformation implements Iterable<Partition>, Serializ
                 iterator.remove();
             }
         };
-    }
+    }*/
   
     @Override
     public int hashCode() {

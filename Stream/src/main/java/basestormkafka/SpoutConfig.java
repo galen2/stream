@@ -20,14 +20,12 @@ package basestormkafka;
 import java.io.Serializable;
 import java.util.List;
 
-import clojure.main;
-
 
 public class SpoutConfig extends KafkaConfig implements Serializable {
     public List<String> zkServers = null;
     public Integer zkPort = null;
-    public String zkRoot = null;
-    public String id = null;
+    public String zkRoot = null;//记录消息偏移量
+//    public String id = null;
 
     // setting for how often to save the current kafka offset to ZooKeeper
     public long stateUpdateIntervalMs = 2000;
@@ -41,15 +39,14 @@ public class SpoutConfig extends KafkaConfig implements Serializable {
     public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, String id) {
     	super(hosts, topic);
     	this.zkRoot = zkRoot;
-    	this.id = id;
+//    	this.id = id;
     }
     
     
     
-    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, String id, List<String> zkServers,Integer zkPort) {
+    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, List<String> zkServers,Integer zkPort) {
         super(hosts, topic);
         this.zkRoot = zkRoot;
-        this.id = id;
         this.zkServers = zkServers;
         this.zkPort = zkPort;
     }

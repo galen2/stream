@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
+import org.apache.storm.zookeeper.KeeperException;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class DynamicBrokersReader {
             String brokerInfoPath = brokerPath();
             for (int partition = 0; partition < numPartitionsForTopic; partition++) {
                 int leader = getLeaderFor(partition,topic);
-                String path = brokerInfoPath + "/" + leader;
+                String path = brokerInfoPath + "/" + leader;///kafka/brokers/ids/0
                 try {
                 	 byte[] brokerData = _curator.getData().forPath(path);
                      Broker hp = getBrokerHost(brokerData);
@@ -82,7 +83,12 @@ public class DynamicBrokersReader {
         } catch (SocketTimeoutException e) {
 					throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+        	String message = e.getMessage();
+        	if(message.contains("org.apache.zookeeper.KeeperException$NoNodeException")){
+        		return globalPartitionInformation;
+        	}else{
+        		throw new RuntimeException(e);
+        	}
         }
         LOG.info("Read partition info from zookeeper: " + globalPartitionInformation);
         return globalPartitionInformation;

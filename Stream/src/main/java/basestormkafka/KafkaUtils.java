@@ -35,6 +35,7 @@ import kafka.api.PartitionOffsetRequestInfo;
 import kafka.common.TopicAndPartition;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.OffsetRequest;
+import kafka.javaapi.OffsetResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.Message;
@@ -85,7 +86,8 @@ public class KafkaUtils {
         OffsetRequest request = new OffsetRequest(
                 requestInfo, kafka.api.OffsetRequest.CurrentVersion(), consumer.clientId());
 
-        long[] offsets = consumer.getOffsetsBefore(request).offsets(topic, partition);
+        OffsetResponse offsetsBefore = consumer.getOffsetsBefore(request);
+        long[] offsets = offsetsBefore.offsets(topic, partition);
         if (offsets.length > 0) {
             return offsets[0];
         } else {
