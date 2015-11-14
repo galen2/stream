@@ -25,10 +25,10 @@ import java.util.Map;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
-import org.apache.storm.zookeeper.KeeperException;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import backtype.storm.Config;
 import backtype.storm.utils.Utils;
 import basestormkafka.trient.GlobalPartitionInformation;

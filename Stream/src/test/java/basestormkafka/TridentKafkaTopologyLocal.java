@@ -107,8 +107,8 @@ public class TridentKafkaTopologyLocal {
     	ZkHosts zksHost = new ZkHosts(zkStr, "/kafka/brokers");
         List<String> zkServers = new LinkedList<String>();
         zkServers.add(zkHost);
-		SpoutConfig spoutConf = new SpoutConfig(zksHost, kafkaTopic, "/kafka","1",zkServers,zkPort);
-		KafkaSpouts spout = new KafkaSpouts(spoutConf);
+//        SpoutConfig spoutConf = new SpoutConfig(zksHost, kafkaTopic, "/kafka","1",zkServers,zkPort);
+		KafkaSpouts spout = new KafkaSpouts(null);
 		return spout;
     }
 }

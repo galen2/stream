@@ -84,7 +84,7 @@ public class PartitionManager {
         Long jsonOffset = null;
         String path = committedPath();
         try {
-        	
+        	//kafka/consumers/lq_stream_customer/offsets/my-replicated-topic/partition_1
             Map<Object, Object> json = _state.readJSON(path);
             LOG.info("Read partition information from: " + path +  "  --> " + json );
             if (json != null) {
@@ -118,7 +118,6 @@ public class PartitionManager {
 
         LOG.info("Starting Kafka " + _consumer.host() + ":" + id.partition + " from offset " + _committedTo);
         _emittedToOffset = _committedTo;
-
         _fetchAPILatencyMax = new CombinedMetric(new MaxMetric());
         _fetchAPILatencyMean = new ReducedMetric(new MeanReducer());
         _fetchAPICallCount = new CountMetric();
@@ -153,6 +152,7 @@ public class PartitionManager {
                 	if(object instanceof byte[]){
                 		 byte[] dataByte = (byte[])object;
                 		 System.out.println("consumerMessage:"+new String(dataByte));
+                		 ack(toEmit.offset);//测试使用
                 	}
                 	
                 }
@@ -263,10 +263,8 @@ public class PartitionManager {
 
     
     public void commit() {
-    	String committedPath = committedPath();
-    	System.out.println(committedPath);
         long lastCompletedOffset = lastCompletedOffset();
-//        if (_committedTo != lastCompletedOffset) {
+        if (_committedTo != lastCompletedOffset) {
             LOG.debug("Writing last completed offset (" + lastCompletedOffset + ") to ZK for " + _partition + " for topology: " + _topologyInstanceId);
             Map<Object, Object> data = (Map<Object, Object>) ImmutableMap.builder()
                     .put("topology", ImmutableMap.of("id", _topologyInstanceId,
@@ -275,17 +273,17 @@ public class PartitionManager {
                     .put("partition", _partition.partition)
                     .put("broker", ImmutableMap.of("host", _partition.host.host,
                             "port", _partition.host.port))
-                    .put("topic", _spoutConfig.topic).build();
+                    .put("topic", _partition.topic).build();
             _state.writeJSON(committedPath(), data);
             _committedTo = lastCompletedOffset;
             LOG.debug("Wrote last completed offset (" + lastCompletedOffset + ") to ZK for " + _partition + " for topology: " + _topologyInstanceId);
-//        } else {
-//            LOG.debug("No new offset for " + _partition + " for topology: " + _topologyInstanceId);
-//        }
+        } else {
+            LOG.debug("No new offset for " + _partition + " for topology: " + _topologyInstanceId);
+        }
     }
-    ///kafka/my-replicated-topic/partition_1
+    ///kafka/consumers/lqstream/offsets/my-replicated-topic/0
     private String committedPath() {
-        return _spoutConfig.zkRoot + "/" + _partition.topic + "/" + _partition.getId();
+        return _spoutConfig.zkRoot + "/" +"consumers"+"/" +_spoutConfig.groupId+"/"+"offsets"+"/"+ _partition.topic + "/" + _partition.getId();
     }
 
     public long lastCompletedOffset() {

@@ -22,11 +22,13 @@ import java.util.List;
 
 
 public class SpoutConfig extends KafkaConfig implements Serializable {
-    public List<String> zkServers = null;
+	
+    public List<String> zkServers = null;//记录消息偏移量的zk地址。192.168.33.14
     public Integer zkPort = null;
-    public String zkRoot = null;//记录消息偏移量
-//    public String id = null;
+    public String zkRoot = null;// /kafka 记录消息偏移量
 
+    public String groupId = "";
+    
     // setting for how often to save the current kafka offset to ZooKeeper
     public long stateUpdateIntervalMs = 2000;
 
@@ -43,15 +45,13 @@ public class SpoutConfig extends KafkaConfig implements Serializable {
     }
     
     
-    
-    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, List<String> zkServers,Integer zkPort) {
+    public SpoutConfig(BrokerHosts hosts, String[] topic, String zkRoot, List<String> zkServers,Integer zkPort,String groupId) {
         super(hosts, topic);
         this.zkRoot = zkRoot;
         this.zkServers = zkServers;
         this.zkPort = zkPort;
+        this.groupId = groupId;
     }
-    
-    
     
     
 }

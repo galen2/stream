@@ -18,6 +18,11 @@
 package basestormkafka;
 
 
+/**
+ * 记录KAFKA的partition信息的zk
+ * @author Administrator
+ *
+ */
 public class ZkHosts implements BrokerHosts {
     private static final String DEFAULT_ZK_PATH = "/brokers";
 
