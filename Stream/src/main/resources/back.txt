@@ -1,0 +1,83 @@
+topic:customer:register_verify
+5199&
+content:
+{
+    "update": {
+        "dataKey": "5199&", 
+        "columns": {
+            "last_change_time": {
+                "isKey": false, 
+                "index": 8, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "2014-03-19 14:18:22"
+            }, 
+            "verify_id": {
+                "isKey": true, 
+                "index": 0, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "5199"
+            }, 
+            "receive_code": {
+                "isKey": false, 
+                "index": 1, 
+                "isNull": false, 
+                "updated": true, 
+                "value": "13121444336184"
+            }, 
+            "timeout_time": {
+                "isKey": false, 
+                "index": 6, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "86400"
+            }, 
+            "status": {
+                "isKey": false, 
+                "index": 7, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "100"
+            }, 
+            "regist_code": {
+                "isKey": false, 
+                "index": 3, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "607588"
+            }, 
+            "create_time": {
+                "isKey": false, 
+                "index": 5, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "2014-03-19 14:18:22"
+            }, 
+            "receive_type": {
+                "isKey": false, 
+                "index": 2, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "2"
+            }, 
+            "veryfy_times": {
+                "isKey": false, 
+                "index": 9, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "0"
+            }, 
+            "cust_id": {
+                "isKey": false, 
+                "index": 4, 
+                "isNull": false, 
+                "updated": false, 
+                "value": "354288"
+            }
+        }
+    }, 
+    "dataKey": "5199&", 
+    "dbName": "customer", 
+    "tableName": "register_verify"
+}
