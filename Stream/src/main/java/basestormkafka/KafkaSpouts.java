@@ -112,6 +112,7 @@ public class KafkaSpouts extends BaseRichSpout {
             try {
                 // in case the number of managers decreased
                 _currPartitionIndex = _currPartitionIndex % managers.size();
+                _currPartitionIndex=1;
                 
                 /**
                  *每次消费一条消息tuple， 然后提交commit（）

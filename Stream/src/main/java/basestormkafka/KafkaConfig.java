@@ -28,12 +28,10 @@ public class KafkaConfig implements Serializable {
     public final String[] topic;
     public final String clientId;
 
-//    public int fetchSizeBytes = 1024 * 1024;
-    public int fetchSizeBytes = 1024;
+    public int fetchSizeBytes = 1024 * 1024;
     public int socketTimeoutMs = 10000;
     public int fetchMaxWait = 10000;
-//    public int bufferSizeBytes = 1024 * 1024;
-    public int bufferSizeBytes = 1024;
+    public int bufferSizeBytes = 1024 * 1024;
     public MultiScheme scheme = new RawMultiScheme();
     public boolean ignoreZkOffsets = false;
     public long startOffsetTime = kafka.api.OffsetRequest.EarliestTime();

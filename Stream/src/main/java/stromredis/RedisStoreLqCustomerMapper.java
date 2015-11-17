@@ -21,6 +21,10 @@ public class RedisStoreLqCustomerMapper implements RedisStoreLqMapper {
 
 	@Override
 	public RedisDataType getDataType(Tuple input) {
+		System.out.println(input.getMessageId());
+		System.out.println(input.getString(0));
+		System.out.println(input.getString(0));
+		
 		
 		return null;
 	}

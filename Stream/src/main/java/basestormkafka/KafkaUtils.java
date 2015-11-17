@@ -168,44 +168,45 @@ public class KafkaUtils {
     }
 
     public static ByteBufferMessageSet fetchMessages(KafkaConfig config, SimpleConsumer consumer,String topic, Partition partition, long offset)
-            throws TopicOffsetOutOfRangeException, FailedFetchException,RuntimeException {
-        ByteBufferMessageSet msgs = null;
-        int partitionId = partition.partition;
-        FetchRequestBuilder builder = new FetchRequestBuilder();
+    		throws TopicOffsetOutOfRangeException, FailedFetchException,RuntimeException {
+    	ByteBufferMessageSet msgs = null;
+    	int partitionId = partition.partition;
+    	FetchRequestBuilder builder = new FetchRequestBuilder();
+    	
         FetchRequest fetchRequest = builder.addFetch(topic, partitionId, offset, config.fetchSizeBytes).
                 clientId(config.clientId).maxWait(config.fetchMaxWait).build();
-        FetchResponse fetchResponse;
-        try {
-            fetchResponse = consumer.fetch(fetchRequest);
-        } catch (Exception e) {
-            if (e instanceof ConnectException ||
-                    e instanceof SocketTimeoutException ||
-                    e instanceof IOException ||
-                    e instanceof UnresolvedAddressException
-                    ) {
-                LOG.warn("Network error when fetching messages:", e);
-                throw new FailedFetchException(e);
-            } else {
-                throw new RuntimeException(e);
-            }
-        }
-        if (fetchResponse.hasError()) {
-            KafkaError error = KafkaError.getError(fetchResponse.errorCode(topic, partitionId));
-            if (error.equals(KafkaError.OFFSET_OUT_OF_RANGE) && config.useStartOffsetTimeIfOffsetOutOfRange) {
-                String msg = "Got fetch request with offset out of range: [" + offset + "]";
-                LOG.warn(msg);
-                throw new TopicOffsetOutOfRangeException(msg);
-            } else {
-                String message = "Error fetching data from [" + partition + "] for topic [" + topic + "]: [" + error + "]";
-                LOG.error(message);
-                throw new FailedFetchException(message);
-            }
-        } else {
-            msgs = fetchResponse.messageSet(topic, partitionId);
-        }
-        return msgs;
+    	FetchResponse fetchResponse;
+    	try {
+    		fetchResponse = consumer.fetch(fetchRequest);
+    	} catch (Exception e) {
+    		if (e instanceof ConnectException ||
+    				e instanceof SocketTimeoutException ||
+    				e instanceof IOException ||
+    				e instanceof UnresolvedAddressException
+    				) {
+    			LOG.warn("Network error when fetching messages:", e);
+    			throw new FailedFetchException(e);
+    		} else {
+    			throw new RuntimeException(e);
+    		}
+    	}
+    	if (fetchResponse.hasError()) {
+    		KafkaError error = KafkaError.getError(fetchResponse.errorCode(topic, partitionId));
+    		if (error.equals(KafkaError.OFFSET_OUT_OF_RANGE) && config.useStartOffsetTimeIfOffsetOutOfRange) {
+    			String msg = "Got fetch request with offset out of range: [" + offset + "]";
+    			LOG.warn(msg);
+    			throw new TopicOffsetOutOfRangeException(msg);
+    		} else {
+    			String message = "Error fetching data from [" + partition + "] for topic [" + topic + "]: [" + error + "]";
+    			LOG.error(message);
+    			throw new FailedFetchException(message);
+    		}
+    	} else {
+    		msgs = fetchResponse.messageSet(topic, partitionId);
+    	}
+    	return msgs;
     }
-
+  
 /**
  * 把从kafka读取的源消费的数据封装成另外一个对象tups
  * @param kafkaConfig 配信息，如那个topic,那么parttion

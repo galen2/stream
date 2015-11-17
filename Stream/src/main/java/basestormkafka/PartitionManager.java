@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
+import kafka.message.Message;
 import kafka.message.MessageAndOffset;
 
 import org.slf4j.Logger;
@@ -143,6 +144,8 @@ public class PartitionManager {
             if (toEmit == null) {
                 return EmitState.NO_EMITTED;
             }
+            Message msg = toEmit.msg;
+            
             Iterable<List<Object>> tups = KafkaUtils.generateTuples(_spoutConfig, toEmit.msg);
             if (tups != null) {
                 for (List<Object> tup : tups) {
@@ -152,7 +155,6 @@ public class PartitionManager {
                 	if(object instanceof byte[]){
                 		 byte[] dataByte = (byte[])object;
                 		 System.out.println("consumerMessage:"+new String(dataByte));
-                		 ack(toEmit.offset);//测试使用
                 	}
                 	
                 }
@@ -187,6 +189,7 @@ public class PartitionManager {
 
         ByteBufferMessageSet msgs = null;
         try {
+        	offset=0L;//测试
             msgs = KafkaUtils.fetchMessages(_spoutConfig, _consumer,_partition.topic,_partition, offset);
         } catch (TopicOffsetOutOfRangeException e) {
             _emittedToOffset = KafkaUtils.getOffset(_consumer,_partition.topic, _partition.partition, kafka.api.OffsetRequest.EarliestTime());

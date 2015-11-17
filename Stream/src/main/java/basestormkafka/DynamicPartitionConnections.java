@@ -61,6 +61,7 @@ public class DynamicPartitionConnections {
     
 
     public SimpleConsumer register(Broker host, int partition) {
+    	String clientId = "333333";
         if (!_connections.containsKey(host)) {
             _connections.put(host, new ConnectionInfo(new SimpleConsumer(host.host, host.port, _config.socketTimeoutMs, _config.bufferSizeBytes, _config.clientId)));
         }

@@ -15,13 +15,14 @@ import basestormkafka.ZkHosts;
 
 public class Client {
 	
-    private static String[] topics=new String[]{"my-replicated-topic","customer"};
+//	private static String[] topics=new String[]{"my-replicated-topic","customer---register_verify"};
+    private static String[] topics=new String[]{"customer---register_verify"};
     private static String zkHost = "192.168.33.14";
     private static int zkPort = 2181;
     private static String zkStr  = zkHost.concat(":").concat(zkPort+"");
     private static String zkRoot = "/kafka";
     private static String zkPath = "/kafka/brokers";
-    private static String groupId=  "lq_stream_customer";
+    private static String groupId=  "lq_stream_customer2";
     
     private static final String TEST_REDIS_HOST = "192.168.32.30";
     private static final String TEST_REDIS_PORT = "6379";
@@ -31,7 +32,6 @@ public class Client {
 		TopologyBuilder builder = new TopologyBuilder();
 		builder.setSpout("spout1", spout);
 		builder.setBolt("2_bolt", SetRedisStoreLqBolt(args), 1).shuffleGrouping("spout1");
-//		builder.setBolt("2_bolt", new KafkaBolt(), 1).shuffleGrouping("spout1");
 		
 		Config conf = new Config();
         conf.setDebug(true);
